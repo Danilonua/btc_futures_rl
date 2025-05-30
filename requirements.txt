@@ -1,0 +1,10 @@
+gym
+stable-baselines3
+ccxt
+pandas
+numpy
+pyyaml
+matplotlib
+pytest
+flake8
+black

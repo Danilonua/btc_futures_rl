@@ -1,0 +1,32 @@
+# Параметры среды
+env:
+  symbol: "BTC/USDT"
+  timeframe: "1h"
+  window_size: 50
+  initial_balance: 10000.0
+  max_position: 0.1  # Max 10% капитала
+  max_leverage: 5
+  commission: 0.0004  # Binance taker fee
+  stop_loss: 0.03    # 3%
+  take_profit: 0.06   # 6%
+
+# Параметры агента
+agent:
+  algorithm: "PPO"
+  policy: "MlpPolicy"
+  learning_rate: 0.0003
+  gamma: 0.99
+  ent_coef: 0.01
+  batch_size: 64
+  n_steps: 2048
+
+# Обучение
+training:
+  total_timesteps: 100000
+  log_interval: 10
+  save_freq: 10000
+
+# Паттерны
+pattern_logging:
+  profit_threshold: 0.05
+  min_confidence: 0.7

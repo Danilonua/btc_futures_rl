@@ -1,0 +1,37 @@
+# Config for BTC Futures RL agent
+exchange: binance
+symbol: BTC/USDT
+api_key: "YOUR_API_KEY"
+api_secret: "YOUR_API_SECRET"
+use_testnet: true
+
+env:
+  max_position: 0.5           # in BTC
+  max_leverage: 5
+  fee: 0.0004                 # 0.04% per trade
+  slippage: 0.0002            # 0.02% per trade
+  stop_loss: 0.01             # 1% stop loss
+  take_profit: 0.02           # 2% take profit
+  var_window: 100
+  var_quantile: 0.99
+  initial_balance: 10000
+  symbol: BTC/USDT
+  timeframe: 1m
+  data_limit: 2000
+
+agent:
+  algo: ppo
+  learning_rate: 0.0003
+  batch_size: 64
+  gamma: 0.99
+  n_steps: 2048
+  ent_coef: 0.01
+  policy: MlpPolicy
+  total_timesteps: 1000000
+  seed: 42
+
+data:
+  lookback_window: 100
+  data_source: "binance"
+  start_date: "2022-01-01"
+  end_date: "2023-01-01"
