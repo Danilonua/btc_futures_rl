@@ -1,13 +1,14 @@
-import pandas as pd
 import ccxt
 import time
-from utils.exchange_api import get_binance_client
-
+import pandas as pd
 
 def load_historical_data(symbol, timeframe, limit=1000):
-    exchange = get_binance_client(testnet=True)
+    # Для исторических данных используем публичный клиент без ключей
+    exchange = ccxt.binance({
+        'enableRateLimit': True,
+        'options': {'defaultType': 'future'}
+    })
 
-    # Получение данных
     data = []
     since = None
     while len(data) < limit:
@@ -33,7 +34,6 @@ def load_historical_data(symbol, timeframe, limit=1000):
             print(f"Error fetching data: {e}")
             time.sleep(5)
 
-    # Преобразование в DataFrame
     df = pd.DataFrame(data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
     df.set_index('timestamp', inplace=True)

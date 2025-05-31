@@ -5,25 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bf5c87d0-6862-4b46-84fc-5e4f9703e65f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/btc_futures_rl.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/agent/ppo_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backtest/backtest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/btc_futures.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/env/trading_env.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/logs/pattern_kb.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_risk_management.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_trading_env.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training/train.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/data_loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/exchange_api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/pattern_logger.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/risk_management.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/btc_futures_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/env/btc_futures_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/training/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/training/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/data_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/data_loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/pattern_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/pattern_logger.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +66,7 @@
       <workItem from="1748637267085" duration="49000" />
       <workItem from="1748637333667" duration="312000" />
       <workItem from="1748637676101" duration="13000" />
+      <workItem from="1748637717316" duration="7707000" />
     </task>
     <servers />
   </component>

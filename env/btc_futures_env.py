@@ -1,9 +1,9 @@
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 import logging
-from utils.pattern_logger import PatternLogger
 import pandas as pd
+from utils.pattern_logger import PatternLogger
 
 class BTCFuturesEnv(gym.Env):
     """
@@ -42,7 +42,8 @@ class BTCFuturesEnv(gym.Env):
         # Actions: 0 = hold, 1 = long, 2 = short, 3 = close
         self.action_space = spaces.Discrete(4)
 
-    def reset(self):
+    def reset(self, *, seed=None, options=None):
+        super().reset(seed=seed)
         self.current_step = 0
         self.balance = self.initial_balance
         self.position = 0.0  # BTC
@@ -53,7 +54,7 @@ class BTCFuturesEnv(gym.Env):
         self.portfolio_values = [self.initial_balance]
         self.returns = []
         self.cumulative_returns = []
-        return self._get_observation()
+        return self._get_observation(), {}
 
     def _get_observation(self):
         row = self.data.iloc[self.current_step]
@@ -64,7 +65,7 @@ class BTCFuturesEnv(gym.Env):
 
     def step(self, action):
         if self.done:
-            return self._get_observation(), 0.0, True, {}
+            return self._get_observation(), 0.0, True, False, {}
         row = self.data.iloc[self.current_step]
         price = row['close']
         reward = 0.0
@@ -119,7 +120,9 @@ class BTCFuturesEnv(gym.Env):
         self.current_step += 1
         if self.current_step >= len(self.data) - 1 or self.equity <= 0:
             self.done = True
-        return self._get_observation(), reward, self.done, info
+        terminated = self.done
+        truncated = False
+        return self._get_observation(), reward, terminated, truncated, info
 
     def _log_trade(self, side, price, reward=0.0):
         self.trades.append({

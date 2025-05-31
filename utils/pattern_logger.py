@@ -1,6 +1,8 @@
+import os
 import json
 import sqlite3
 import logging
+import pandas as pd
 from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
@@ -50,6 +52,15 @@ class PatternLogger:
         logger.info(f"Pattern logged: {name} ({time_window}), confidence={confidence}")
 
     def _log_json(self, pattern: Dict[str, Any]):
+        def convert(obj):
+            if isinstance(obj, pd.Timestamp):
+                return obj.isoformat()
+            if isinstance(obj, dict):
+                return {k: convert(v) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [convert(i) for i in obj]
+            return obj
+        pattern = convert(pattern)
         with open(self.path, 'r+') as f:
             data = json.load(f)
             data.append(pattern)
