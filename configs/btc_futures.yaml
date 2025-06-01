@@ -8,7 +8,7 @@ use_testnet: true
 env:
   max_position: 0.5           # in BTC
   max_leverage: 5
-  fee: 0.0004                 # 0.04% per trade
+  fee: 0.00075                # Binance futures fee
   slippage: 0.0002            # 0.02% per trade
   stop_loss: 0.01             # 1% stop loss
   take_profit: 0.02           # 2% take profit
@@ -18,20 +18,22 @@ env:
   symbol: BTC/USDT
   timeframe: 1m
   data_limit: 2000
+  validation_split: 0.15      # Для early stopping
 
 agent:
   algo: ppo
-  learning_rate: 0.0003
-  batch_size: 64
-  gamma: 0.99
+  learning_rate: 0.00025
+  batch_size: 512
+  gamma: 0.92
   n_steps: 2048
   ent_coef: 0.01
   policy: MlpPolicy
   total_timesteps: 1000000
   seed: 42
+  target_update_freq: 100
 
 data:
-  lookback_window: 100
+  lookback_window: 30
   data_source: "binance"
   start_date: "2022-01-01"
   end_date: "2023-01-01"

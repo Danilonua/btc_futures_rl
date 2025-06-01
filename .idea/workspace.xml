@@ -5,12 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bf5c87d0-6862-4b46-84fc-5e4f9703e65f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/btc_15m_data_2018_to_2025.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/btc_futures.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/btc_futures.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/btc_futures_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/env/btc_futures_env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/patterns.json" beforeDir="false" afterPath="$PROJECT_DIR$/logs/patterns.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/training/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/training/train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/data_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/data_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/pattern_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/pattern_logger.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +35,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -45,6 +45,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\danil\PycharmProjects\btc_futures_rl" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -66,7 +71,11 @@
       <workItem from="1748637267085" duration="49000" />
       <workItem from="1748637333667" duration="312000" />
       <workItem from="1748637676101" duration="13000" />
-      <workItem from="1748637717316" duration="7707000" />
+      <workItem from="1748637717316" duration="13240000" />
+      <workItem from="1748711745341" duration="4941000" />
+      <workItem from="1748726271909" duration="3473000" />
+      <workItem from="1748771511339" duration="1213000" />
+      <workItem from="1748808535075" duration="771000" />
     </task>
     <servers />
   </component>

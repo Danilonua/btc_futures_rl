@@ -34,6 +34,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, default='configs/btc_futures.yaml')
     parser.add_argument('--save_path', type=str, default='models/best_model.zip')
+    parser.add_argument('--episodes', type=int, default=10)  # уменьшено для быстрого теста
+    parser.add_argument('--save_interval', type=int, default=50)
+    parser.add_argument('--test_mode', action='store_true')
     args = parser.parse_args()
 
     try:
@@ -41,10 +44,35 @@ def main():
         data = load_data(config)
         env = BTCFuturesEnv(config, data)
         agent = RLAgent(env, config)
-        agent.train(config['agent']['total_timesteps'])
-        os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
-        agent.save(args.save_path)
-        logger.info('Training finished and model saved.')
+        episode_rewards = []
+        if args.test_mode:
+            for episode in range(args.episodes):
+                state, _ = env.reset()
+                episode_reward = 0
+                done = False
+                steps = 0
+                action_counts = {}
+                while not done and steps < 50:  # ограничение длины эпизода
+                    action = agent.model.action_space.sample()
+                    action = int(action)
+                    action_counts[action] = action_counts.get(action, 0) + 1
+                    next_state, reward, terminated, truncated, _ = env.step(action)
+                    if np.isnan(reward):
+                        print(f"NaN reward detected at episode {episode+1}, step {steps+1}")
+                        break
+                    episode_reward += reward
+                    state = next_state
+                    done = terminated or truncated
+                    steps += 1
+                episode_rewards.append(episode_reward)
+                epsilon = getattr(agent, 'epsilon', None)
+                epsilon_str = f", Epsilon={epsilon:.3f}" if epsilon is not None else ""
+                print(f"Episode {episode+1}: Reward={episode_reward:.2f}, Portfolio={env.equity:.2f}{epsilon_str}, Steps={steps}, Actions={action_counts}")
+        else:
+            total_timesteps = args.episodes * 50
+            agent.train(total_timesteps=total_timesteps)
+            agent.save(args.save_path)
+        logger.info('Controlled training finished.')
     except Exception as e:
         logger.error(f"Training pipeline failed: {e}")
         sys.exit(1)
