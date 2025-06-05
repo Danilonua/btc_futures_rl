@@ -28,6 +28,7 @@ class BTCFuturesEnv(gym.Env):
             ]
         self.fee = config.get('fee', 0.0004)  # 0.04% default
         self.slippage = config.get('slippage', 0.0002)  # 0.02% default
+        self.commission = config.get('commission', 0.0005)  # 0.05% commission (new, for realism)
         self.max_position = config.get('max_position', 1.0)  # 1 BTC
         self.max_leverage = config.get('max_leverage', 5)
         self.stop_loss = config.get('stop_loss', 0.02)  # 2%
@@ -88,37 +89,56 @@ class BTCFuturesEnv(gym.Env):
         info = {}
         # Action logic
         if action == 1:  # Long
-            if self.position == 0:
-                self.position = min(self.max_position, self.balance * self.max_leverage / price)
-                self.entry_price = price
-                self._log_trade('long', price)
+    if self.position == 0:
+        self.position = min(self.max_position, self.balance * self.max_leverage / price)
+        self.entry_price = price
+        trade_value = abs(self.position) * price
+        commission = trade_value * self.commission
+        self.balance -= commission
+        self._log_trade('long', price)
         elif action == 2:  # Short
-            if self.position == 0:
-                self.position = -min(self.max_position, self.balance * self.max_leverage / price)
-                self.entry_price = price
-                self._log_trade('short', price)
+    if self.position == 0:
+        self.position = -min(self.max_position, self.balance * self.max_leverage / price)
+        self.entry_price = price
+        trade_value = abs(self.position) * price
+        commission = trade_value * self.commission
+        self.balance -= commission
+        self._log_trade('short', price)
         elif action == 3:  # Close
             if self.position != 0:
-                pnl = (price - self.entry_price) * self.position
-                fee = abs(self.position) * price * self.fee
-                slip = abs(self.position) * price * self.slippage
-                reward = pnl - fee - slip
-                self.balance += reward
-                self.position = 0
-                self.entry_price = 0
-                self._log_trade('close', price, reward)
+    pnl = (price - self.entry_price) * self.position
+    fee = abs(self.position) * price * self.fee
+    slip = abs(self.position) * price * self.slippage
+    commission = abs(self.position) * price * self.commission
+    reward = pnl - fee - slip - commission
+    self.balance += reward
+    self.position = 0
+    self.entry_price = 0
+    self._log_trade('close', price, reward)
         # Risk management: stop-loss/take-profit
         if self.position != 0:
-            pnl_pct = (price - self.entry_price) / self.entry_price * np.sign(self.position)
-            if pnl_pct <= -self.stop_loss or pnl_pct >= self.take_profit:
-                pnl = (price - self.entry_price) * self.position
-                fee = abs(self.position) * price * self.fee
-                slip = abs(self.position) * price * self.slippage
-                reward = pnl - fee - slip
-                self.balance += reward
-                self.position = 0
-                self.entry_price = 0
-                self._log_trade('auto_close', price, reward)
+    pnl_pct = (price - self.entry_price) / self.entry_price * np.sign(self.position)
+    # Auto stop-loss at 3% loss (hard-coded for now, can be config-driven)
+    if pnl_pct < -0.03:
+        pnl = (price - self.entry_price) * self.position
+        fee = abs(self.position) * price * self.fee
+        slip = abs(self.position) * price * self.slippage
+        commission = abs(self.position) * price * self.commission
+        reward = pnl - fee - slip - commission
+        self.balance += reward
+        self.position = 0
+        self.entry_price = 0
+        self._log_trade('auto_stop_loss', price, reward)
+    elif pnl_pct <= -self.stop_loss or pnl_pct >= self.take_profit:
+        pnl = (price - self.entry_price) * self.position
+        fee = abs(self.position) * price * self.fee
+        slip = abs(self.position) * price * self.slippage
+        commission = abs(self.position) * price * self.commission
+        reward = pnl - fee - slip - commission
+        self.balance += reward
+        self.position = 0
+        self.entry_price = 0
+        self._log_trade('auto_close', price, reward)
         # VaR risk control
         if self.current_step >= self.var_window:
             returns = self.data['close'].pct_change().iloc[self.current_step-self.var_window:self.current_step]
@@ -131,12 +151,12 @@ class BTCFuturesEnv(gym.Env):
         self.portfolio_values.append(self.equity)
         self.returns.append(self.equity / self.portfolio_values[-2] - 1 if len(self.portfolio_values) > 1 else 0)
         self.cumulative_returns.append(np.prod([1 + r for r in self.returns]) - 1)
-        # --- New reward function: Sharpe + returns ---
+        # --- New reward function: Sharpe + returns with increased reward for risk ---
         returns = (self.equity - prev_net_worth) / (prev_net_worth + 1e-8)
         self.returns_history.append(returns)
         if len(self.returns_history) > 10:
             sharpe = np.mean(self.returns_history) / (np.std(self.returns_history) + 1e-8)
-            reward = sharpe * 0.7 + returns * 0.3
+            reward = (sharpe * 0.7 + returns * 0.3) * 2  # Increased reward factor
         else:
             reward = returns
         if len(self.returns_history) > 100:
@@ -194,7 +214,7 @@ class BTCFuturesEnv(gym.Env):
             if rsi > 70:
                 pass  # logging отключено для теста
             elif rsi < 30:
-                pass  # logging отключено для тест��
+                pass  # logging отключено для теста
 
     def _add_indicators(self, df):
         # RSI

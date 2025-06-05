@@ -1,6 +1,7 @@
 import ccxt
 import time
 import pandas as pd
+from utils.preprocessing import robust_preprocess_data
 
 def load_historical_data(symbol, timeframe, limit=1000):
     # Для исторических данных используем публичный клиент без ключей
@@ -37,4 +38,5 @@ def load_historical_data(symbol, timeframe, limit=1000):
     df = pd.DataFrame(data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
     df.set_index('timestamp', inplace=True)
+    df = robust_preprocess_data(df)
     return df.sort_index().iloc[-limit:]

@@ -10,6 +10,7 @@ env:
   max_leverage: 5
   fee: 0.00075                # Binance futures fee
   slippage: 0.0002            # 0.02% per trade
+  commission: 0.0005          # 0.05% commission per trade
   stop_loss: 0.01             # 1% stop loss
   take_profit: 0.02           # 2% take profit
   var_window: 100
@@ -28,6 +29,8 @@ agent:
   n_steps: 2048
   ent_coef: 0.01
   policy: MlpPolicy
+  policy_kwargs:
+    net_arch: [256, 256]
   total_timesteps: 1000000
   seed: 42
   target_update_freq: 100

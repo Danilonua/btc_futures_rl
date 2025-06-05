@@ -7,6 +7,7 @@ from env.btc_futures_env import BTCFuturesEnv
 import yaml
 import os
 import sys
+from pyfolio import timeseries  # For advanced metrics
 
 # Добавить корень проекта в PYTHONPATH на случай запуска из других мест
 sys.path.append('.')
@@ -92,26 +93,39 @@ def main(model_path, data_path, config_path):
     print("📈 График сохранен: portfolio_trend.png")
 
     # 7. Расчет метрик
-    initial_balance = env.initial_balance
-    final_balance = env.equity
-    returns = (final_balance - initial_balance) / initial_balance * 100
-    # Расчет максимальной просадки
-    peak = initial_balance
-    max_drawdown = 0
-    for value in portfolio_history:
-        if value > peak:
-            peak = value
-        drawdown = (peak - value) / peak * 100
-        if drawdown > max_drawdown:
-            max_drawdown = drawdown
+initial_balance = env.initial_balance
+final_balance = env.equity
+returns = (final_balance - initial_balance) / initial_balance * 100
+# Расчет максимальной просадки
+peak = initial_balance
+max_drawdown = 0
+for value in portfolio_history:
+    if value > peak:
+        peak = value
+    drawdown = (peak - value) / peak * 100
+    if drawdown > max_drawdown:
+        max_drawdown = drawdown
 
-    print("\n📊 Результаты оценки:")
-    print(f"Начальный баланс: ${initial_balance:.2f}")
-    print(f"Конечный баланс: ${final_balance:.2f}")
-    print(f"Доходность: {returns:.2f}%")
-    print(f"Максимальная просадка: {max_drawdown:.2f}%")
+# --- Advanced statistics ---
+returns_series = pd.Series(np.diff(portfolio_history) / np.array(portfolio_history[:-1]))
+try:
+    sharpe_ratio = timeseries.sharpe_ratio(returns_series)
+    max_dd = timeseries.max_drawdown(returns_series)
+    calmar_ratio = returns_series.mean() / max_dd if max_dd != 0 else np.nan
+except Exception as e:
+    sharpe_ratio = np.nan
+    max_dd = np.nan
+    calmar_ratio = np.nan
 
-    # 8. Сохранение логов
+print("\n📊 Результаты оценки:")
+print(f"Начальный баланс: ")
+print(f"Конечный баланс: ")
+print(f"Доходность: {returns:.2f}%")
+print(f"Максимальная просадка: {max_drawdown:.2f}%")
+print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
+print(f"Calmar Ratio: {calmar_ratio:.2f}")
+
+# 8. Сохранение логов
     log_df = pd.DataFrame({
         'step': np.arange(len(portfolio_history)),
         'portfolio_value': portfolio_history
